@@ -276,10 +276,9 @@ fn print_thread_statistics(thread_events: &StdHashMap<u32, Vec<Event>>) {
                 );
             }
         }
-
-        info!("Exiting...");
-        std::process::exit(0);
     }
+    info!("Exiting...");
+    std::process::exit(0);
 }
 
 fn format_number(num: u64) -> String {

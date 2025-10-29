@@ -42,20 +42,43 @@ fn try_kernel_delay(ctx: TracePointContext) -> Result<u32, u32> {
         return Ok(0);
     }
     
-    // debug!(&ctx, "Event recorded for PID {} TID {}", pid, tid);
-
     // For now, we'll create a simple event for demonstration
     // In a real implementation, you would collect actual syscall and scheduling data
     let current_time = unsafe { aya_ebpf::helpers::bpf_ktime_get_ns() };
     
     // Reserve space in the ring buffer for our event
     if let Some(mut entry) = RING_BUF.reserve::<Event>(0) {
-        // Create a simple syscall stat event
+        // Create a simple syscall stat event with more meaningful names
         let mut name = [0u8; 16];
-        name[0] = b't';
-        name[1] = b'e';
-        name[2] = b's';
-        name[3] = b't';
+        
+        // Simple approach: use syscall names based on TID mod
+        // All names need to be the same length
+        let syscall_name = match tid % 5 {
+
+            0 => b"read",
+            1 => b"writ",
+            2 => b"open",
+            3 => b"clos",
+            4 => b"poll",
+            5 => b"send",
+            6 => b"recv",
+            7 => b"sock",
+            8 => b"getd",
+            9 => b"ioct",
+            10 => b"sent",
+            11 => b"bind",
+            12 => b"acce",
+            13 => b"conn",
+            14 => b"list",
+            _ => b"othr",
+        };
+        
+        // Copy the selected name
+        for i in 0..syscall_name.len() {
+            if i < name.len() {
+                name[i] = syscall_name[i];
+            }
+        }
         
         let syscall_stat = SyscallStat {
             name,
@@ -95,10 +118,16 @@ fn try_kernel_delay(ctx: TracePointContext) -> Result<u32, u32> {
             vector: 1,
         };
         
+        // Create a more meaningful thread name using the TID
         let mut thread_name = [0u8; 16];
-        let thread_name_str = b"test-thread";
-        for i in 0..thread_name_str.len() {
-            thread_name[i] = thread_name_str[i];
+        
+        // Simple approach: just use "thread" as the name for all threads
+        // In a real implementation, you would get the actual thread name from the kernel
+        let simple_name = b"thread";
+        for i in 0..simple_name.len() {
+            if i < thread_name.len() {
+                thread_name[i] = simple_name[i];
+            }
         }
         
         let mut resource_type = [0u8; 32];
@@ -142,6 +171,7 @@ fn try_kernel_delay(ctx: TracePointContext) -> Result<u32, u32> {
         // Submit the entry to make it visible to userspace
         entry.submit(0);
         
+        // debug!(&ctx, "Event recorded for PID {} TID {}", pid, tid);
     }
     
     Ok(0)
