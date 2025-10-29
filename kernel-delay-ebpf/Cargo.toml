@@ -1,0 +1,17 @@
+[package]
+name = "kernel-delay-ebpf"
+version = "0.1.0"
+edition.workspace = true
+
+[dependencies]
+kernel-delay-common = { path = "../kernel-delay-common" }
+
+aya-ebpf = { workspace = true }
+aya-log-ebpf = { workspace = true }
+
+[build-dependencies]
+which = { workspace = true }
+
+[[bin]]
+name = "kernel-delay"
+path = "src/main.rs"
