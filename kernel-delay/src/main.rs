@@ -18,6 +18,9 @@ struct Args {
     /// PID of the process to monitor
     #[clap(short, long)]
     pid: u32,
+    #[clap(short, long, default_value = "10")] // default
+    /// Duration for which to monitor the process
+    duration: u64,
 }
 
 #[tokio::main]
@@ -67,10 +70,75 @@ async fn main() -> anyhow::Result<()> {
     let mut pid_map = AyaHashMap::try_from(ebpf.take_map("TARGET_PID").unwrap())?;
     pid_map.insert(0u64, args.pid as u64, 0)?;
 
-    // Attach to a valid kernel tracepoint
-    let program: &mut TracePoint = ebpf.program_mut("kernel_delay").unwrap().try_into()?;
+    // Attach to syscall tracepoints (only attach to ones that exist)
+    let program: &mut TracePoint = ebpf.program_mut("syscall_enter").unwrap().try_into()?;
     program.load()?;
-    program.attach("sched", "sched_switch")?;
+
+    // Try to attach to common syscall tracepoints that exist on this system
+    let syscalls_to_attach = vec![
+        ("syscalls", "sys_enter_read"),
+        ("syscalls", "sys_enter_write"),
+        ("syscalls", "sys_enter_openat"),
+        ("syscalls", "sys_enter_close"),
+        ("syscalls", "sys_enter_poll"),
+        ("syscalls", "sys_enter_lseek"),
+        ("syscalls", "sys_enter_mmap"),
+        ("syscalls", "sys_enter_mprotect"),
+        ("syscalls", "sys_enter_munmap"),
+    ];
+
+    for (category, name) in syscalls_to_attach {
+        match program.attach(category, name) {
+            Ok(_) => debug!("Successfully attached to {}:{}", category, name),
+            Err(e) => debug!("Failed to attach to {}:{}: {}", category, name, e),
+        }
+    }
+
+    let program: &mut TracePoint = ebpf.program_mut("syscall_exit").unwrap().try_into()?;
+    program.load()?;
+
+    // new kernel syscall is openat , not open , check "mount | grep tracefs"
+    // kernel 6.1.0-38-arm64, 在旧的内核中叫 sys_enter_open 新的内核里 sys_enter_openat.
+    // ls /sys/kernel/tracing/events/syscalls| grep open
+    // sys_enter_fsopen
+    // sys_enter_mq_open
+    // sys_enter_openat
+    // sys_enter_openat2
+    // ...
+
+    let syscalls_to_attach = vec![
+        ("syscalls", "sys_exit_read"),
+        ("syscalls", "sys_exit_write"),
+        ("syscalls", "sys_exit_openat"),
+        ("syscalls", "sys_exit_close"),
+        ("syscalls", "sys_exit_poll"),
+        ("syscalls", "sys_exit_lseek"),
+        ("syscalls", "sys_exit_mmap"),
+        ("syscalls", "sys_exit_mprotect"),
+        ("syscalls", "sys_exit_munmap"),
+    ];
+
+    for (category, name) in syscalls_to_attach {
+        match program.attach(category, name) {
+            Ok(_) => debug!("Successfully attached to {}:{}", category, name),
+            Err(e) => debug!("Failed to attach to {}:{}: {}", category, name, e),
+        }
+    }
+
+    // Attach to softirq tracepoints
+    let program: &mut TracePoint = ebpf.program_mut("softirq_entry").unwrap().try_into()?;
+    program.load()?;
+    match program.attach("irq", "softirq_entry") {
+        Ok(_) => debug!("Successfully attached to irq:softirq_entry"),
+        Err(e) => debug!("Failed to attach to irq:softirq_entry: {}", e),
+    }
+
+    let program: &mut TracePoint = ebpf.program_mut("softirq_exit").unwrap().try_into()?;
+    program.load()?;
+    match program.attach("irq", "softirq_exit") {
+        Ok(_) => debug!("Successfully attached to irq:softirq_exit"),
+        Err(e) => debug!("Failed to attach to irq:softirq_exit: {}", e),
+    }
 
     // Get reference to the ring buffer
     let ring_buf_map = ebpf.take_map("RING_BUF").unwrap();
@@ -88,8 +156,7 @@ async fn main() -> anyhow::Result<()> {
     let start_instant = std::time::Instant::now();
     let mut thread_events: StdHashMap<u32, Vec<Event>> = StdHashMap::new();
 
-    while start_instant.elapsed().as_secs() < 5 {
-        // Run for 5 seconds
+    while start_instant.elapsed().as_secs() < args.duration {
         // Try to read events from the ring buffer
         while let Some(item) = ring_buf.next() {
             // Parse the event
@@ -163,6 +230,7 @@ fn print_thread_statistics(thread_events: &StdHashMap<u32, Vec<Event>>) {
                 let mut thread_run_stats: Vec<ThreadRunStat> = Vec::new();
                 let mut thread_ready_stats: Vec<ThreadReadyStat> = Vec::new();
                 let mut total_excluding_poll = 0u64;
+                let mut softirq_stats: Vec<kernel_delay_common::IrqStat> = Vec::new();
 
                 for event in events {
                     match event.event_type {
@@ -175,6 +243,9 @@ fn print_thread_statistics(thread_events: &StdHashMap<u32, Vec<Event>>) {
                         }
                         x if x == EventType::ThreadReadyStats as u32 => {
                             thread_ready_stats.push(event.thread_ready_stat);
+                        }
+                        x if x == EventType::SoftIrqStats as u32 => {
+                            softirq_stats.push(event.irq_stat);
                         }
                         _ => {}
                     }
@@ -245,39 +316,40 @@ fn print_thread_statistics(thread_events: &StdHashMap<u32, Vec<Event>>) {
                 }
 
                 // Print IRQ statistics (soft interrupts only, no network card info)
-                println!("           [SOFT IRQ STATISTICS]");
-                println!(
-                    "           {:<20} {:<11} {:<13} {:<17} {:<13}",
-                    "NAME", "VECT_NR", "COUNT", "TOTAL ns", "MAX ns"
-                );
-                println!(
-                    "           {:<20} {:<11} {:<13} {:<17} {:<13}",
-                    "----", "-------", "-----", "--------", "------"
-                );
-                println!(
-                    "           {:<20} {:<11} {:<13} {:<17} {:<13}",
-                    "timer", 1, 3, "10,259", "3,815"
-                );
-                println!(
-                    "           {:<20} {:<11} {:<13} {:<17} {:<13}",
-                    "net_rx", 3, 1, "17,699", "17,699"
-                );
-                println!(
-                    "           {:<20} {:<11} {:<13} {:<17} {:<13}",
-                    "sched", 7, 6, "13,820", "3,226"
-                );
-                println!(
-                    "           {:<20} {:<11} {:<13} {:<17} {:<13}",
-                    "rcu", 9, 16, "13,586", "1,554"
-                );
-                println!(
-                    "           TOTAL: {:<32} {:<13} {:<17} {:<13}",
-                    "", "", 26, "55,364"
-                );
+                if !softirq_stats.is_empty() {
+                    println!("           [SOFT IRQ STATISTICS]");
+                    println!(
+                        "           {:<20} {:<11} {:<13} {:<17} {:<13}",
+                        "NAME", "VECT_NR", "COUNT", "TOTAL ns", "MAX ns"
+                    );
+                    for stat in &softirq_stats {
+                        let name = String::from_utf8_lossy(&stat.name)
+                            .trim_end_matches('\0')
+                            .to_string();
+                        println!(
+                            "           {:<20} {:<11} {:<13} {:<17} {:<13}",
+                            name,
+                            stat.vector,
+                            stat.count,
+                            format_number(stat.total_ns),
+                            format_number(stat.max_ns)
+                        );
+                    }
+                    // Calculate total
+                    let total_count: u32 = softirq_stats.iter().map(|s| s.count).sum();
+                    let total_ns: u64 = softirq_stats.iter().map(|s| s.total_ns).sum();
+                    println!(
+                        "           TOTAL: {:<32} {:<13} {:<17} {:<13}",
+                        "",
+                        "",
+                        total_count,
+                        format_number(total_ns)
+                    );
+                }
             }
         }
     }
-    info!("Exiting...");
+    debug!("Kernel delay measurement exiting...");
     std::process::exit(0);
 }
 
