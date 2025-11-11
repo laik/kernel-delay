@@ -73,17 +73,27 @@ fn print_thread_statistics(thread_events: &StdHashMap<u32, Vec<Event>>, target_p
                 // Print thread header
                 println!("{:<10} {:<16} [SYSCALL STATISTICS]", tid, thread_name);
 
-                // Collect and print syscall statistics
-                let mut syscall_stats: Vec<SyscallStat> = Vec::new();
+                // Collect and aggregate statistics
+                let mut syscall_stats: StdHashMap<u32, SyscallStat> = StdHashMap::new();
                 let mut thread_run_stats: Vec<ThreadRunStat> = Vec::new();
                 let mut thread_ready_stats: Vec<ThreadReadyStat> = Vec::new();
                 let mut total_excluding_poll = 0u64;
-                let mut softirq_stats: Vec<kernel_delay_common::IrqStat> = Vec::new();
+                let mut softirq_stats: StdHashMap<u32, kernel_delay_common::IrqStat> = StdHashMap::new();
 
                 for event in events {
                     match event.event_type {
                         x if x == EventType::SyscallStats as u32 => {
-                            syscall_stats.push(event.syscall_stat);
+                            // Aggregate syscall statistics by syscall number
+                            let syscall_number = event.syscall_stat.number;
+                            syscall_stats.entry(syscall_number)
+                                .and_modify(|stat| {
+                                    stat.count += event.syscall_stat.count;
+                                    stat.total_ns += event.syscall_stat.total_ns;
+                                    if event.syscall_stat.max_ns > stat.max_ns {
+                                        stat.max_ns = event.syscall_stat.max_ns;
+                                    }
+                                })
+                                .or_insert(event.syscall_stat);
                             total_excluding_poll = event.total_excluding_poll;
                         }
                         x if x == EventType::ThreadRunStats as u32 => {
@@ -93,7 +103,17 @@ fn print_thread_statistics(thread_events: &StdHashMap<u32, Vec<Event>>, target_p
                             thread_ready_stats.push(event.thread_ready_stat);
                         }
                         x if x == EventType::SoftIrqStats as u32 => {
-                            softirq_stats.push(event.irq_stat);
+                            // Aggregate softirq statistics by vector
+                            let vector = event.irq_stat.vector;
+                            softirq_stats.entry(vector)
+                                .and_modify(|stat| {
+                                    stat.count += event.irq_stat.count;
+                                    stat.total_ns += event.irq_stat.total_ns;
+                                    if event.irq_stat.max_ns > stat.max_ns {
+                                        stat.max_ns = event.irq_stat.max_ns;
+                                    }
+                                })
+                                .or_insert(event.irq_stat);
                         }
                         _ => {}
                     }
@@ -105,7 +125,12 @@ fn print_thread_statistics(thread_events: &StdHashMap<u32, Vec<Event>>, target_p
                         "           {:<20} {:<11} {:<13} {:<17} {:<13}",
                         "NAME", "NUMBER", "COUNT", "TOTAL ns", "MAX ns"
                     );
-                    for stat in &syscall_stats {
+                    
+                    // Sort syscall stats by total time (descending) for better readability
+                    let mut sorted_syscall_stats: Vec<_> = syscall_stats.values().collect();
+                    sorted_syscall_stats.sort_by(|a, b| b.total_ns.cmp(&a.total_ns));
+                    
+                    for stat in sorted_syscall_stats {
                         let name = get_syscall_name(stat.number);
                         println!(
                             "           {:<20} {:<11} {:<13} {:<17} {:<13}",
@@ -131,13 +156,33 @@ fn print_thread_statistics(thread_events: &StdHashMap<u32, Vec<Event>>, target_p
                         "           {:<19} {:<17} {:<17} {:<13}",
                         "SCHED_CNT", "TOTAL ns", "MIN ns", "MAX ns"
                     );
-                    for stat in &thread_run_stats {
+                    
+                    // Aggregate thread run statistics
+                    if let Some(first_stat) = thread_run_stats.first() {
+                        let mut aggregated_stat = ThreadRunStat {
+                            sched_cnt: 0,
+                            total_ns: 0,
+                            min_ns: first_stat.min_ns,
+                            max_ns: 0,
+                        };
+                        
+                        for stat in &thread_run_stats {
+                            aggregated_stat.sched_cnt += stat.sched_cnt;
+                            aggregated_stat.total_ns += stat.total_ns;
+                            if stat.min_ns < aggregated_stat.min_ns {
+                                aggregated_stat.min_ns = stat.min_ns;
+                            }
+                            if stat.max_ns > aggregated_stat.max_ns {
+                                aggregated_stat.max_ns = stat.max_ns;
+                            }
+                        }
+                        
                         println!(
                             "           {:<19} {:<17} {:<17} {:<13}",
-                            stat.sched_cnt,
-                            format_number(stat.total_ns),
-                            format_number(stat.min_ns),
-                            format_number(stat.max_ns)
+                            aggregated_stat.sched_cnt,
+                            format_number(aggregated_stat.total_ns),
+                            format_number(aggregated_stat.min_ns),
+                            format_number(aggregated_stat.max_ns)
                         );
                     }
                     println!("");
@@ -150,14 +195,28 @@ fn print_thread_statistics(thread_events: &StdHashMap<u32, Vec<Event>>, target_p
                         "           {:<19} {:<17} {:<13}",
                         "SCHED_CNT", "TOTAL ns", "MAX ns"
                     );
+                    
+                    // Aggregate thread ready statistics
+                    let mut aggregated_ready_stat = ThreadReadyStat {
+                        sched_cnt: 0,
+                        total_ns: 0,
+                        max_ns: 0,
+                    };
+                    
                     for stat in &thread_ready_stats {
-                        println!(
-                            "           {:<19} {:<17} {:<13}",
-                            stat.sched_cnt,
-                            format_number(stat.total_ns),
-                            format_number(stat.max_ns)
-                        );
+                        aggregated_ready_stat.sched_cnt += stat.sched_cnt;
+                        aggregated_ready_stat.total_ns += stat.total_ns;
+                        if stat.max_ns > aggregated_ready_stat.max_ns {
+                            aggregated_ready_stat.max_ns = stat.max_ns;
+                        }
                     }
+                    
+                    println!(
+                        "           {:<19} {:<17} {:<13}",
+                        aggregated_ready_stat.sched_cnt,
+                        format_number(aggregated_ready_stat.total_ns),
+                        format_number(aggregated_ready_stat.max_ns)
+                    );
                     println!("");
                 }
 
@@ -168,7 +227,12 @@ fn print_thread_statistics(thread_events: &StdHashMap<u32, Vec<Event>>, target_p
                         "           {:<20} {:<11} {:<13} {:<17} {:<13}",
                         "NAME", "VECT_NR", "COUNT", "TOTAL ns", "MAX ns"
                     );
-                    for stat in &softirq_stats {
+                    
+                    // Sort softirq stats by total time (descending) for better readability
+                    let mut sorted_softirq_stats: Vec<_> = softirq_stats.values().collect();
+                    sorted_softirq_stats.sort_by(|a, b| b.total_ns.cmp(&a.total_ns));
+                    
+                    for stat in sorted_softirq_stats {
                         let name = get_softirq_name(stat.vector);
                         println!(
                             "           {:<20} {:<11} {:<13} {:<17} {:<13}",
@@ -179,9 +243,10 @@ fn print_thread_statistics(thread_events: &StdHashMap<u32, Vec<Event>>, target_p
                             format_number(stat.max_ns)
                         );
                     }
+                    
                     // Calculate total
-                    let total_count: u32 = softirq_stats.iter().map(|s| s.count).sum();
-                    let total_ns: u64 = softirq_stats.iter().map(|s| s.total_ns).sum();
+                    let total_count: u32 = softirq_stats.values().map(|s| s.count).sum();
+                    let total_ns: u64 = softirq_stats.values().map(|s| s.total_ns).sum();
                     println!(
                         "           TOTAL: {:<32} {:<13} {:<17} {:<13}",
                         "",
