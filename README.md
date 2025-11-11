@@ -44,542 +44,230 @@ Note: The application must be run with `sudo` privileges to access eBPF function
 ### Example Output
 
 ```text
-# Start sampling @2025-11-11T03:03:06.432799015+00:00 (03:03:06 UTC)
+# Start sampling @2025-11-11T03:33:23.920781130+00:00 (03:33:23 UTC)
 # Monitoring PID: 3439, Duration: 10 seconds
-# Stop sampling @2025-11-11T03:03:16.442993814+00:00 (03:03:16 UTC)
-# Sample dump @2025-11-11T03:03:16.443019998+00:00 (03:03:16 UTC)
-# Total events captured: 807
+# Stop sampling @2025-11-11T03:33:33.931373099+00:00 (03:33:33 UTC)
+# Sample dump @2025-11-11T03:33:33.931450757+00:00 (03:33:33 UTC)
+# Total events captured: 458
 TID        THREAD           <RESOURCE SPECIFIC>
 ---------- ---------------- ----------------------------------------------------------------------------
+3439       tailscaled       [SYSCALL STATISTICS]
+           NAME                 NUMBER      COUNT         TOTAL ns          MAX ns       
+           read                 0           8             7,554,731         3,436,063    
+           syscall_3886         3886        1             3,515,906         3,515,906    
+           syscall_1800         1800        1             2,080,611         2,080,611    
+           syscall_4050         4050        1             1,534,682         1,534,682    
+           syscall_1832         1832        1             368,968           368,968      
+           syscall_1408         1408        1             363,956           363,956      
+           syscall_3968         3968        1             95,205            95,205       
+           kill                 62          3             46,314            36,033       
+           setregid             114         2             19,067            10,838       
+           write                1           1             6,665             6,665        
+           syscall_4294967274   4294967274  1             4,483             4,483        
+           syscall_4294967285   4294967285  2             3,413             2,172        
+           TOTAL( - poll):                                       15,594,001   
+
+           [SOFT IRQ STATISTICS]
+           NAME                 VECT_NR     COUNT         TOTAL ns          MAX ns       
+           SCHED                7           3             23,103            8,784        
+           RCU                  9           2             4,942             3,421        
+           TOTAL:                                                5                 28,045       
 3460       tailscaled       [SYSCALL STATISTICS]
            [SOFT IRQ STATISTICS]
-           NAME                 VECT_NR     COUNT         TOTAL ns          MAX ns
-           SCHED                7           6             26,011            5,152
-           RCU                  9           2             2,643             1,447
-           TOTAL:                                                8                 28,654
+           NAME                 VECT_NR     COUNT         TOTAL ns          MAX ns       
+           SCHED                7           2             9,151             5,667        
+           TOTAL:                                                2                 9,151        
+3465       tailscaled       [SYSCALL STATISTICS]
+           [SOFT IRQ STATISTICS]
+           NAME                 VECT_NR     COUNT         TOTAL ns          MAX ns       
+           TIMER                1           1             11,914            11,914       
+           SCHED                7           1             9,215             9,215        
+           RCU                  9           1             2,035             2,035        
+           TOTAL:                                                3                 23,164       
+3493       tailscaled       [SYSCALL STATISTICS]
+           NAME                 NUMBER      COUNT         TOTAL ns          MAX ns       
+           read                 0           8             7,546,726         3,434,897    
+           syscall_3904         3904        1             3,518,047         3,518,047    
+           syscall_1800         1800        1             2,082,282         2,082,282    
+           syscall_4050         4050        1             1,536,589         1,536,589    
+           syscall_1832         1832        1             379,261           379,261      
+           syscall_1408         1408        1             363,943           363,943      
+           kill                 62          19            306,712           35,522       
+           semctl               66          5             166,892           64,020       
+           syscall_3968         3968        1             96,247            96,247       
+           write                1           8             58,575            9,850        
+           capset               126         1             44,765            44,765       
+           sched_get_priority_max 146         2             38,141            32,070       
+           timer_create         222         1             37,419            37,419       
+           syscall_4294967285   4294967285  16            33,991            4,751        
+           rename               82          2             18,184            11,045       
+           rt_sigsuspend        130         3             17,334            6,422        
+           setregid             114         1             6,685             6,685        
+           eventfd2             290         1             5,920             5,920        
+           syscall_4294967274   4294967274  1             3,481             3,481        
+           TOTAL( - poll):                                       16,261,194   
+
+           [SOFT IRQ STATISTICS]
+           NAME                 VECT_NR     COUNT         TOTAL ns          MAX ns       
+           SCHED                7           8             50,937            7,832        
+           TIMER                1           3             24,399            8,673        
+           RCU                  9           5             8,225             1,797        
+           TOTAL:                                                16                83,561       
+3496       tailscaled       [SYSCALL STATISTICS]
+           NAME                 NUMBER      COUNT         TOTAL ns          MAX ns       
+           kill                 62          10            187,413           35,618       
+           read                 0           11            69,542            14,229       
+           fsetxattr            190         1             45,684            45,684       
+           sync                 162         1             33,670            33,670       
+           syscall_4294967285   4294967285  11            31,774            4,704        
+           semctl               66          1             30,753            30,753       
+           chmod                90          1             9,211             9,211        
+           write                1           1             6,418             6,418        
+           timer_delete         226         2             5,760             4,018        
+           TOTAL( - poll):                                       420,225      
+
+           [SOFT IRQ STATISTICS]
+           NAME                 VECT_NR     COUNT         TOTAL ns          MAX ns       
+           SCHED                7           3             20,245            9,314        
+           RCU                  9           3             9,467             5,142        
+           TOTAL:                                                6                 29,712       
+3497       tailscaled       [SYSCALL STATISTICS]
+           [SOFT IRQ STATISTICS]
+           NAME                 VECT_NR     COUNT         TOTAL ns          MAX ns       
+           RCU                  9           1             4,287             4,287        
+           TOTAL:                                                1                 4,287        
+3498       tailscaled       [SYSCALL STATISTICS]
+           NAME                 NUMBER      COUNT         TOTAL ns          MAX ns       
+           read                 0           18            15,118,178        3,434,764    
+           syscall_3904         3904        2             7,045,589         3,526,841    
+           syscall_1800         1800        2             4,167,634         2,098,953    
+           syscall_4050         4050        2             3,099,980         1,551,059    
+           syscall_1408         1408        2             749,766           385,041      
+           syscall_1832         1832        2             747,654           377,420      
+           syscall_3968         3968        2             199,931           101,195      
+           getppid              110         3             129,860           65,924       
+           kill                 62          9             126,041           43,392       
+           semctl               66          1             62,820            62,820       
+           write                1           9             60,965            9,174        
+           syscall_4294967285   4294967285  7             13,787            2,562        
+           chown                92          1             10,471            10,471       
+           rename               82          1             7,978             7,978        
+           syscall_4294967274   4294967274  2             7,367             3,695        
+           setregid             114         1             6,114             6,114        
+           rt_sigsuspend        130         1             5,177             5,177        
+           TOTAL( - poll):                                       31,559,312   
+
+           [SOFT IRQ STATISTICS]
+           NAME                 VECT_NR     COUNT         TOTAL ns          MAX ns       
+           SCHED                7           5             34,543            10,170       
+           TOTAL:                                                5                 34,543       
+3501       tailscaled       [SYSCALL STATISTICS]
+           [SOFT IRQ STATISTICS]
+           NAME                 VECT_NR     COUNT         TOTAL ns          MAX ns       
+           RCU                  9           1             3,218             3,218        
+           TOTAL:                                                1                 3,218        
+3502       tailscaled       [SYSCALL STATISTICS]
+           NAME                 NUMBER      COUNT         TOTAL ns          MAX ns       
+           read                 0           13            7,588,692         3,452,066    
+           syscall_3904         3904        1             3,557,518         3,557,518    
+           syscall_1950         1950        1             2,108,004         2,108,004    
+           syscall_4050         4050        1             1,633,016         1,633,016    
+           syscall_1832         1832        1             379,679           379,679      
+           syscall_1536         1536        1             374,310           374,310      
+           syscall_3968         3968        1             106,694           106,694      
+           kill                 62          5             67,958            35,260       
+           semctl               66          1             49,817            49,817       
+           getppid              110         1             40,717            40,717       
+           setregid             114         1             40,413            40,413       
+           write                1           4             36,638            14,427       
+           mincore              27          1             21,970            21,970       
+           munmap               11          1             13,681            13,681       
+           shmget               29          1             10,985            10,985       
+           rename               82          1             9,668             9,668        
+           setxattr             188         1             8,961             8,961        
+           shmat                30          1             7,570             7,570        
+           syscall_4294967285   4294967285  3             7,223             2,713        
+           TOTAL( - poll):                                       16,063,514   
+
+           [SOFT IRQ STATISTICS]
+           NAME                 VECT_NR     COUNT         TOTAL ns          MAX ns       
+           SCHED                7           2             10,514            5,433        
+           TIMER                1           1             8,547             8,547        
+           RCU                  9           1             1,700             1,700        
+           TOTAL:                                                4                 20,761       
+3507       tailscaled       [SYSCALL STATISTICS]
+           [SOFT IRQ STATISTICS]
+           NAME                 VECT_NR     COUNT         TOTAL ns          MAX ns       
+           RCU                  9           1             3,435             3,435        
+           TOTAL:                                                1                 3,435        
 3508       tailscaled       [SYSCALL STATISTICS]
-           NAME                 NUMBER      COUNT         TOTAL ns          MAX ns
-           getrusage            98          56            1,211,827         49,334
-           kill                 62          12            307,535           28,004
-           write                1           23            167,891           11,740
-           syscall_4294967285   4294967285  19            43,393            3,154
-           set_tid_address      218         1             7,357             7,357
-           syscall_4294967274   4294967274  1             3,134             3,134
-           TOTAL( - poll):                                       23,548
+           NAME                 NUMBER      COUNT         TOTAL ns          MAX ns       
+           read                 0           17            15,133,262        3,445,184    
+           syscall_3886         3886        2             7,042,392         3,526,460    
+           syscall_1800         1800        2             4,228,493         2,136,208    
+           syscall_4050         4050        2             3,163,462         1,621,480    
+           syscall_1408         1408        2             762,652           394,710      
+           syscall_1832         1832        2             755,295           377,778      
+           syscall_3968         3968        2             211,077           110,690      
+           semctl               66          4             180,069           55,350       
+           kill                 62          2             105,745           54,257       
+           getppid              110         2             86,926            48,458       
+           arch_prctl           158         1             46,122            46,122       
+           capset               126         1             37,512            37,512       
+           sched_get_priority_max 146         4             27,172            7,320        
+           syscall_4294967285   4294967285  6             21,722            4,831        
+           setregid             114         1             18,655            18,655       
+           write                1           2             15,312            10,972       
+           syscall_4294967274   4294967274  3             13,244            5,172        
+           getdents             78          1             6,389             6,389        
+           TOTAL( - poll):                                       31,855,501   
 
            [SOFT IRQ STATISTICS]
-           NAME                 VECT_NR     COUNT         TOTAL ns          MAX ns
-           SCHED                7           16            80,965            8,777
-           RCU                  9           6             8,420             1,527
-           TOTAL:                                                22                89,385
-3516       tailscaled       [SYSCALL STATISTICS]
-           NAME                 NUMBER      COUNT         TOTAL ns          MAX ns
-           read                 0           48            45,246,183        3,457,286
-           syscall_3150         3150        6             21,172,487        3,544,495
-           syscall_2270         2270        6             20,943,554        3,553,385
-           syscall_1832         1832        6             2,249,482         385,116
-           syscall_1408         1408        6             2,210,580         373,466
-           kill                 62          76            2,000,337         50,246
-           getrusage            98          101           1,216,626         50,557
-           syscall_3968         3968        6             609,038           107,238
-           write                1           42            202,983           9,151
-           syscall_4294967285   4294967285  66            132,463           3,368
-           syscall_4294967274   4294967274  3             11,209            3,849
-           TOTAL( - poll):                                       335,411
+           NAME                 VECT_NR     COUNT         TOTAL ns          MAX ns       
+           SCHED                7           6             34,630            7,437        
+           RCU                  9           2             5,104             3,474        
+           TOTAL:                                                8                 39,734       
+3549       tailscaled       [SYSCALL STATISTICS]
+           NAME                 NUMBER      COUNT         TOTAL ns          MAX ns       
+           read                 0           24            22,717,296        3,456,256    
+           syscall_3904         3904        3             10,589,068        3,534,776    
+           syscall_1800         1800        3             6,303,818         2,127,351    
+           syscall_4050         4050        3             4,695,288         1,575,051    
+           syscall_1408         1408        3             1,156,592         397,579      
+           syscall_1832         1832        3             1,121,329         380,170      
+           syscall_3968         3968        3             315,428           113,339      
+           semctl               66          6             228,857           46,834       
+           kill                 62          9             170,086           44,599       
+           getppid              110         4             152,973           39,561       
+           capset               126         1             48,587            48,587       
+           get_robust_list      274         1             39,317            39,317       
+           syscall_422          422         1             34,311            34,311       
+           mq_timedsend         242         1             32,655            32,655       
+           syscall_4294967285   4294967285  15            30,765            2,930        
+           write                1           5             29,139            7,480        
+           setregid             114         4             26,478            7,010        
+           sched_get_priority_max 146         3             20,126            7,804        
+           rt_sigsuspend        130         2             13,480            7,276        
+           syscall_4294967274   4294967274  3             11,921            4,347        
+           TOTAL( - poll):                                       47,737,514   
 
            [SOFT IRQ STATISTICS]
-           NAME                 VECT_NR     COUNT         TOTAL ns          MAX ns
-           NET_RX               3           81            705,589           17,948
-           SCHED                7           36            176,658           9,639
-           RCU                  9           4             8,356             3,414
-           TOTAL:                                                121               890,603
-3550       tailscaled       [SYSCALL STATISTICS]
-           NAME                 NUMBER      COUNT         TOTAL ns          MAX ns
-           read                 0           32            30,179,587        3,459,705
-           syscall_3150         3150        4             14,194,048        3,609,564
-           syscall_2270         2270        4             13,928,375        3,486,487
-           syscall_1832         1832        4             1,489,567         375,972
-           syscall_1408         1408        4             1,485,598         378,658
-           getrusage            98          47            1,023,256         46,534
-           kill                 62          15            413,643           49,812
-           syscall_3968         3968        4             400,822           113,980
-           write                1           19            131,119           9,812
-           syscall_4294967285   4294967285  18            44,108            3,287
-           syscall_4294967274   4294967274  6             20,378            3,665
-           TOTAL( - poll):                                       8,994
-
+           NAME                 VECT_NR     COUNT         TOTAL ns          MAX ns       
+           SCHED                7           6             37,400            9,207        
+           RCU                  9           2             3,317             1,811        
+           TOTAL:                                                8                 40,717       
+3551       tailscaled       [SYSCALL STATISTICS]
            [SOFT IRQ STATISTICS]
-           NAME                 VECT_NR     COUNT         TOTAL ns          MAX ns
-           SCHED                7           17            82,868            7,113
-           TIMER                1           1             14,621            14,621
-           RCU                  9           3             4,752             1,618
-           TOTAL:                                                21                102,241
-           syscall_3450         3450        1             3,393,711         3,393,711
-           read                 0           1             3,364,611         3,364,611
-           read                 0           1             3,037             3,037
-           syscall_2091         2091        1             3,351,934         3,351,934
-           read                 0           1             3,251,217         3,251,217
-           read                 0           1             3,110             3,110
-           syscall_3968         3968        1             271,128           271,128
-           syscall_1536         1536        1             386,931           386,931
-           read                 0           1             366,356           366,356
-           read                 0           1             3,104             3,104
-           syscall_1833         1833        1             401,342           401,342
-           read                 0           1             368,404           368,404
-           pipe                 22          1             23,401            23,401
-           madvise              28          1             16,577            16,577
-           shmget               29          1             10,429            10,429
-           munmap               11          1             23,021            23,021
-           read                 0           1             3,438             3,438
-           read                 0           1             4,640             4,640
-           read                 0           1             3,201             3,201
-           read                 0           1             2,181             2,181
-           read                 0           1             32,471            32,471
-           syscall_4294967274   4294967274  1             4,413             4,413
-           write                1           1             6,087             6,087
-           syscall_4294967274   4294967274  1             4,289             4,289
-           write                1           1             5,799             5,799
-           syscall_4294967274   4294967274  1             4,059             4,059
-           write                1           1             5,782             5,782
-           read                 0           1             3,788             3,788
-           syscall_3300         3300        1             3,416,820         3,416,820
-           read                 0           1             3,356,639         3,356,639
-           read                 0           1             3,504             3,504
-           syscall_2091         2091        1             3,303,088         3,303,088
-           read                 0           1             3,252,271         3,252,271
-           read                 0           1             3,017             3,017
-           syscall_3968         3968        1             270,033           270,033
-           syscall_1408         1408        1             380,995           380,995
-           read                 0           1             365,544           365,544
-           read                 0           1             3,294             3,294
-           syscall_1833         1833        1             402,448           402,448
-           read                 0           1             368,120           368,120
-           write                1           1             11,455            11,455
-           read                 0           1             3,190             3,190
-           syscall_3300         3300        1             3,428,443         3,428,443
-           read                 0           1             3,223,345         3,223,345
-           read                 0           1             3,217             3,217
-           syscall_2091         2091        1             3,318,469         3,318,469
-           read                 0           1             3,227,501         3,227,501
-           read                 0           1             3,180             3,180
-           syscall_3968         3968        1             267,995           267,995
-           syscall_1408         1408        1             391,881           391,881
-           read                 0           1             354,239           354,239
-           read                 0           1             3,274             3,274
-           syscall_1833         1833        1             413,810           413,810
-           read                 0           1             351,955           351,955
-           write                1           1             11,382            11,382
-           read                 0           1             3,310             3,310
-           syscall_3300         3300        1             3,460,503         3,460,503
-           read                 0           1             3,362,529         3,362,529
-           read                 0           1             3,253             3,253
-           syscall_2091         2091        1             3,304,857         3,304,857
-           read                 0           1             3,228,434         3,228,434
-           read                 0           1             3,144             3,144
-           syscall_3968         3968        1             267,581           267,581
-           syscall_1408         1408        1             384,653           384,653
-           read                 0           1             353,010           353,010
-           read                 0           1             3,030             3,030
-           syscall_1833         1833        1             417,922           417,922
-           read                 0           1             351,804           351,804
-           write                1           1             11,676            11,676
-           syscall_4294967274   4294967274  1             4,299             4,299
-           TOTAL( - poll):                                       4,299
-
+           NAME                 VECT_NR     COUNT         TOTAL ns          MAX ns       
+           TIMER                1           1             14,928            14,928       
+           SCHED                7           1             7,314             7,314        
+           RCU                  9           1             1,647             1,647        
+           TOTAL:                                                3                 23,889       
+3552       tailscaled       [SYSCALL STATISTICS]
            [SOFT IRQ STATISTICS]
-           NAME                 VECT_NR     COUNT         TOTAL ns          MAX ns
-           SCHED                7           1             5,238             5,238
-           RCU                  9           1             2,653             2,653
-           SCHED                7           1             8,812             8,812
-           RCU                  9           1             5,596             5,596
-           RCU                  9           1             6,617             6,617
-           RCU                  9           1             3,788             3,788
-           SCHED                7           1             5,231             5,231
-           SCHED                7           1             9,250             9,250
-           SCHED                7           1             9,194             9,194
-           RCU                  9           1             2,198             2,198
-           SCHED                7           1             8,833             8,833
-           SCHED                7           1             8,235             8,235
-           SCHED                7           1             9,460             9,460
-           RCU                  9           1             2,028             2,028
-           TOTAL:                                                14                87,133
-3042       tailscaled       [SYSCALL STATISTICS]
-           NAME                 NUMBER      COUNT         TOTAL ns          MAX ns
-           getrusage            98          1             24,439            24,439
-           syscall_4294967285   4294967285  1             2,411             2,411
-           set_tid_address      218         1             4,580             4,580
-           syscall_4294967285   4294967285  1             1,731             1,731
-           write                1           1             4,793             4,793
-           kill                 62          1             21,109            21,109
-           getrusage            98          1             22,843            22,843
-           syscall_4294967285   4294967285  1             2,378             2,378
-           kill                 62          1             21,146            21,146
-           getrusage            98          1             4,827             4,827
-           write                1           1             3,922             3,922
-           kill                 62          1             21,497            21,497
-           getrusage            98          1             21,451            21,451
-           syscall_4294967285   4294967285  1             2,656             2,656
-           kill                 62          1             20,258            20,258
-           getrusage            98          1             25,582            25,582
-           getrusage            98          1             26,842            26,842
-           syscall_4294967285   4294967285  1             3,511             3,511
-           kill                 62          1             26,077            26,077
-           getrusage            98          1             6,243             6,243
-           syscall_4294967285   4294967285  1             1,820             1,820
-           getrusage            98          1             28,042            28,042
-           kill                 62          1             25,182            25,182
-           getrusage            98          1             5,953             5,953
-           getrusage            98          1             27,002            27,002
-           syscall_4294967285   4294967285  1             3,083             3,083
-           kill                 62          1             25,108            25,108
-           getrusage            98          1             6,130             6,130
-           syscall_4294967285   4294967285  1             1,814             1,814
-           write                1           1             4,733             4,733
-           kill                 62          1             25,719            25,719
-           getrusage            98          1             5,726             5,726
-           syscall_4294967285   4294967285  1             3,485             3,485
-           TOTAL( - poll):                                       3,485
-
-           [SOFT IRQ STATISTICS]
-           NAME                 VECT_NR     COUNT         TOTAL ns          MAX ns
-           NET_RX               3           1             6,925             6,925
-           NET_RX               3           1             7,570             7,570
-           NET_RX               3           1             8,612             8,612
-           NET_RX               3           1             9,421             9,421
-           SCHED                7           1             9,999             9,999
-           NET_RX               3           1             9,961             9,961
-           NET_RX               3           1             8,896             8,896
-           NET_RX               3           1             8,598             8,598
-           SCHED                7           1             5,055             5,055
-           SCHED                7           1             8,311             8,311
-           NET_RX               3           1             8,822             8,822
-           NET_RX               3           1             4,613             4,613
-           TOTAL:                                                12                96,783
-3043       tailscaled       [SYSCALL STATISTICS]
-           NAME                 NUMBER      COUNT         TOTAL ns          MAX ns
-           getrusage            98          1             6,200             6,200
-           write                1           1             7,630             7,630
-           kill                 62          1             24,633            24,633
-           getrusage            98          1             4,557             4,557
-           getrusage            98          1             25,305            25,305
-           syscall_4294967285   4294967285  1             2,578             2,578
-           write                1           1             4,774             4,774
-           read                 0           1             3,681             3,681
-           syscall_3300         3300        1             3,356,823         3,356,823
-           read                 0           1             3,203,472         3,203,472
-           read                 0           1             2,224             2,224
-           syscall_2091         2091        1             3,265,500         3,265,500
-           read                 0           1             3,198,692         3,198,692
-           read                 0           1             1,954             1,954
-           syscall_3968         3968        1             249,010           249,010
-           syscall_1408         1408        1             372,169           372,169
-           read                 0           1             340,944           340,944
-           read                 0           1             2,088             2,088
-           syscall_1833         1833        1             375,042           375,042
-           read                 0           1             341,562           341,562
-           getrusage            98          1             5,168             5,168
-           syscall_4294967285   4294967285  1             1,875             1,875
-           getrusage            98          1             27,006            27,006
-           syscall_4294967285   4294967285  1             2,686             2,686
-           kill                 62          1             23,825            23,825
-           getrusage            98          1             4,910             4,910
-           syscall_4294967285   4294967285  1             1,597             1,597
-           getrusage            98          1             25,396            25,396
-           syscall_4294967285   4294967285  1             2,719             2,719
-           kill                 62          1             23,415            23,415
-           getrusage            98          1             5,950             5,950
-           syscall_4294967285   4294967285  1             1,660             1,660
-           kill                 62          1             24,921            24,921
-           getrusage            98          1             5,756             5,756
-           getrusage            98          1             27,991            27,991
-           kill                 62          1             24,777            24,777
-           getrusage            98          1             5,556             5,556
-           syscall_4294967285   4294967285  1             1,630             1,630
-           getrusage            98          1             27,734            27,734
-           syscall_4294967285   4294967285  1             2,749             2,749
-           kill                 62          1             24,918            24,918
-           getrusage            98          1             5,589             5,589
-           getrusage            98          1             26,822            26,822
-           write                1           1             7,433             7,433
-           getrusage            98          1             23,999            23,999
-           kill                 62          1             25,766            25,766
-           getrusage            98          1             5,612             5,612
-           syscall_4294967285   4294967285  1             1,611             1,611
-           getrusage            98          1             26,350            26,350
-           kill                 62          1             24,570            24,570
-           getrusage            98          1             5,676             5,676
-           getrusage            98          1             26,822            26,822
-           kill                 62          1             24,667            24,667
-           getrusage            98          1             5,472             5,472
-           syscall_4294967285   4294967285  1             1,787             1,787
-           kill                 62          1             25,152            25,152
-           getrusage            98          1             7,106             7,106
-           syscall_4294967285   4294967285  1             2,308             2,308
-           kill                 62          1             25,168            25,168
-           getrusage            98          1             20,872            20,872
-           syscall_4294967285   4294967285  1             2,252             2,252
-           getrusage            98          1             27,360            27,360
-           kill                 62          1             24,587            24,587
-           getrusage            98          1             5,281             5,281
-           getrusage            98          1             26,351            26,351
-           kill                 62          1             26,882            26,882
-           getrusage            98          1             5,261             5,261
-           syscall_4294967285   4294967285  1             2,078             2,078
-           getrusage            98          1             29,314            29,314
-           kill                 62          1             24,470            24,470
-           getrusage            98          1             5,382             5,382
-           syscall_4294967285   4294967285  1             1,771             1,771
-           getrusage            98          1             26,705            26,705
-           syscall_4294967285   4294967285  1             3,307             3,307
-           kill                 62          1             23,742            23,742
-           getrusage            98          1             5,204             5,204
-           syscall_4294967285   4294967285  1             1,771             1,771
-           getrusage            98          1             28,258            28,258
-           kill                 62          1             26,511            26,511
-           getrusage            98          1             5,780             5,780
-           getrusage            98          1             29,821            29,821
-           kill                 62          1             24,674            24,674
-           getrusage            98          1             5,251             5,251
-           syscall_4294967285   4294967285  1             1,788             1,788
-           getrusage            98          1             29,761            29,761
-           kill                 62          1             27,463            27,463
-           getrusage            98          1             5,328             5,328
-           syscall_4294967285   4294967285  1             1,848             1,848
-           getrusage            98          1             29,658            29,658
-           kill                 62          1             25,405            25,405
-           getrusage            98          1             5,315             5,315
-           getrusage            98          1             28,950            28,950
-           kill                 62          1             25,980            25,980
-           getrusage            98          1             5,262             5,262
-           getrusage            98          1             28,232            28,232
-           kill                 62          1             26,260            26,260
-           getrusage            98          1             5,442             5,442
-           syscall_4294967285   4294967285  1             1,720             1,720
-           getrusage            98          1             28,953            28,953
-           kill                 62          1             26,795            26,795
-           getrusage            98          1             5,261             5,261
-           getrusage            98          1             28,973            28,973
-           read                 0           1             3,314             3,314
-           syscall_3300         3300        1             3,296,974         3,296,974
-           read                 0           1             3,222,444         3,222,444
-           read                 0           1             1,898             1,898
-           syscall_2091         2091        1             3,245,150         3,245,150
-           read                 0           1             3,201,646         3,201,646
-           read                 0           1             1,543             1,543
-           syscall_3968         3968        1             251,305           251,305
-           syscall_1408         1408        1             376,601           376,601
-           read                 0           1             335,305           335,305
-           read                 0           1             1,627             1,627
-           syscall_1833         1833        1             368,968           368,968
-           read                 0           1             341,168           341,168
-           getrusage            98          1             6,053             6,053
-           syscall_4294967285   4294967285  1             1,977             1,977
-           getrusage            98          1             30,510            30,510
-           getrusage            98          1             26,946            26,946
-           getrusage            98          1             28,485            28,485
-           kill                 62          1             45,302            45,302
-           getrusage            98          1             5,960             5,960
-           syscall_4294967285   4294967285  1             1,814             1,814
-           kill                 62          1             24,363            24,363
-           TOTAL( - poll):                                       24,363
-
-           [SOFT IRQ STATISTICS]
-           NAME                 VECT_NR     COUNT         TOTAL ns          MAX ns
-           RCU                  9           1             2,378             2,378
-           SCHED                7           1             4,302             4,302
-           SCHED                7           1             5,145             5,145
-           SCHED                7           1             7,904             7,904
-           SCHED                7           1             8,171             8,171
-           SCHED                7           1             6,317             6,317
-           SCHED                7           1             6,487             6,487
-           SCHED                7           1             4,116             4,116
-           SCHED                7           1             3,791             3,791
-           SCHED                7           1             4,390             4,390
-           SCHED                7           1             7,657             7,657
-           TOTAL:                                                11                60,658
-3045       tailscaled       [SYSCALL STATISTICS]
-           NAME                 NUMBER      COUNT         TOTAL ns          MAX ns
-           write                1           1             5,826             5,826
-           write                1           1             5,335             5,335
-           syscall_4294967274   4294967274  1             3,855             3,855
-           write                1           1             3,721             3,721
-           write                1           1             7,924             7,924
-           setxattr             188         1             19,513            19,513
-           TOTAL( - poll):                                       19,513
-
-3080       tailscaled       [SYSCALL STATISTICS]
-           NAME                 NUMBER      COUNT         TOTAL ns          MAX ns
-           getrusage            98          1             6,291             6,291
-           getrusage            98          1             28,328            28,328
-           kill                 62          1             22,128            22,128
-           getrusage            98          1             4,510             4,510
-           getrusage            98          1             24,219            24,219
-           kill                 62          1             20,602            20,602
-           getrusage            98          1             4,597             4,597
-           getrusage            98          1             27,226            27,226
-           kill                 62          1             24,910            24,910
-           getrusage            98          1             5,191             5,191
-           syscall_4294967285   4294967285  1             1,801             1,801
-           getrusage            98          1             25,566            25,566
-           syscall_4294967285   4294967285  1             3,281             3,281
-           kill                 62          1             23,391            23,391
-           getrusage            98          1             5,155             5,155
-           syscall_4294967285   4294967285  1             1,674             1,674
-           syscall_4294967274   4294967274  1             3,441             3,441
-           getrusage            98          1             27,293            27,293
-           getrusage            98          1             24,213            24,213
-           getrusage            98          1             23,141            23,141
-           kill                 62          1             24,059            24,059
-           getrusage            98          1             5,255             5,255
-           syscall_4294967285   4294967285  1             1,851             1,851
-           getrusage            98          1             26,358            26,358
-           syscall_4294967285   4294967285  1             2,939             2,939
-           kill                 62          1             23,882            23,882
-           getrusage            98          1             5,048             5,048
-           syscall_4294967285   4294967285  1             1,663             1,663
-           getrusage            98          1             26,475            26,475
-           kill                 62          1             25,212            25,212
-           getrusage            98          1             5,054             5,054
-           syscall_4294967285   4294967285  1             1,947             1,947
-           getrusage            98          1             25,970            25,970
-           kill                 62          1             22,555            22,555
-           getrusage            98          1             6,016             6,016
-           getrusage            98          1             26,404            26,404
-           kill                 62          1             24,360            24,360
-           getrusage            98          1             5,793             5,793
-           syscall_4294967285   4294967285  1             1,837             1,837
-           getrusage            98          1             26,882            26,882
-           syscall_4294967285   4294967285  1             2,960             2,960
-           kill                 62          1             45,553            45,553
-           getrusage            98          1             5,238             5,238
-           syscall_4294967285   4294967285  1             1,691             1,691
-           getrusage            98          1             26,598            26,598
-           kill                 62          1             26,495            26,495
-           getrusage            98          1             5,612             5,612
-           syscall_4294967285   4294967285  1             1,760             1,760
-           getrusage            98          1             26,662            26,662
-           kill                 62          1             50,633            50,633
-           getrusage            98          1             5,599             5,599
-           syscall_4294967285   4294967285  1             1,868             1,868
-           getrusage            98          1             27,477            27,477
-           syscall_4294967285   4294967285  1             2,840             2,840
-           kill                 62          1             23,588            23,588
-           getrusage            98          1             5,466             5,466
-           syscall_4294967285   4294967285  1             1,623             1,623
-           getrusage            98          1             28,930            28,930
-           syscall_4294967285   4294967285  1             2,686             2,686
-           kill                 62          1             25,028            25,028
-           getrusage            98          1             5,178             5,178
-           syscall_4294967285   4294967285  1             1,637             1,637
-           getrusage            98          1             25,806            25,806
-           kill                 62          1             25,004            25,004
-           getrusage            98          1             5,549             5,549
-           syscall_4294967285   4294967285  1             1,660             1,660
-           getrusage            98          1             29,037            29,037
-           syscall_4294967285   4294967285  1             3,040             3,040
-           kill                 62          1             26,190            26,190
-           getrusage            98          1             5,211             5,211
-           syscall_4294967285   4294967285  1             1,724             1,724
-           kill                 62          1             26,411            26,411
-           write                1           1             6,167             6,167
-           TOTAL( - poll):                                       6,167
-
-           [SOFT IRQ STATISTICS]
-           NAME                 VECT_NR     COUNT         TOTAL ns          MAX ns
-           SCHED                7           1             5,996             5,996
-           SCHED                7           1             4,711             4,711
-           SCHED                7           1             3,972             3,972
-           SCHED                7           1             3,989             3,989
-           SCHED                7           1             6,691             6,691
-           SCHED                7           1             4,323             4,323
-           SCHED                7           1             4,206             4,206
-           TOTAL:                                                7                 33,888
-3081       tailscaled       [SYSCALL STATISTICS]
-           NAME                 NUMBER      COUNT         TOTAL ns          MAX ns
-           write                1           1             10,018            10,018
-           read                 0           1             3,678             3,678
-           syscall_3300         3300        1             3,307,096         3,307,096
-           read                 0           1             3,207,760         3,207,760
-           read                 0           1             1,617             1,617
-           syscall_2091         2091        1             3,243,401         3,243,401
-           read                 0           1             3,206,757         3,206,757
-           read                 0           1             1,463             1,463
-           syscall_3968         3968        1             241,035           241,035
-           syscall_1408         1408        1             367,034           367,034
-           read                 0           1             341,442           341,442
-           read                 0           1             1,617             1,617
-           syscall_1833         1833        1             369,342           369,342
-           read                 0           1             334,550           334,550
-           write                1           1             7,623             7,623
-           read                 0           1             2,816             2,816
-           syscall_3300         3300        1             3,315,227         3,315,227
-           read                 0           1             3,292,170         3,292,170
-           read                 0           1             1,924             1,924
-           syscall_2091         2091        1             3,249,290         3,249,290
-           read                 0           1             3,203,605         3,203,605
-           read                 0           1             1,507             1,507
-           syscall_3968         3968        1             235,664           235,664
-           syscall_1408         1408        1             370,696           370,696
-           read                 0           1             334,456           334,456
-           read                 0           1             1,580             1,580
-           syscall_1833         1833        1             367,071           367,071
-           read                 0           1             340,616           340,616
-           write                1           1             7,205             7,205
-           read                 0           1             2,866             2,866
-           syscall_3300         3300        1             3,283,709         3,283,709
-           read                 0           1             3,215,848         3,215,848
-           read                 0           1             1,661             1,661
-           syscall_2091         2091        1             3,251,032         3,251,032
-           read                 0           1             3,201,202         3,201,202
-           read                 0           1             1,467             1,467
-           syscall_3968         3968        1             237,682           237,682
-           syscall_1408         1408        1             372,576           372,576
-           read                 0           1             334,710           334,710
-           read                 0           1             1,503             1,503
-           syscall_1833         1833        1             367,422           367,422
-           read                 0           1             340,726           340,726
-           write                1           1             6,929             6,929
-           syscall_4294967274   4294967274  1             2,873             2,873
-           write                1           1             4,085             4,085
-           syscall_4294967274   4294967274  1             3,461             3,461
-           write                1           1             3,758             3,758
-           syscall_4294967274   4294967274  1             3,284             3,284
-           write                1           1             3,621             3,621
-           read                 0           1             3,267             3,267
-           syscall_3300         3300        1             3,317,805         3,317,805
-           read                 0           1             3,202,868         3,202,868
-           read                 0           1             1,700             1,700
-           syscall_2091         2091        1             3,251,250         3,251,250
-           read                 0           1             3,201,616         3,201,616
-           read                 0           1             1,473             1,473
-           syscall_3968         3968        1             240,585           240,585
-           syscall_1408         1408        1             373,709           373,709
-           read                 0           1             335,038           335,038
-           read                 0           1             1,556             1,556
-           syscall_1833         1833        1             370,061           370,061
-           read                 0           1             342,073           342,073
-           TOTAL( - poll):                                       342,073
-
-           [SOFT IRQ STATISTICS]
-           NAME                 VECT_NR     COUNT         TOTAL ns          MAX ns
-           SCHED                7           1             3,705             3,705
-           TIMER                1           1             7,123             7,123
-           SCHED                7           1             6,371             6,371
-           SCHED                7           1             3,511             3,511
-           SCHED                7           1             6,063             6,063
-           RCU                  9           1             1,436             1,436
-           SCHED                7           1             5,999             5,999
-           TOTAL:                                                7                 34,208
-3491       tailscaled       [SYSCALL STATISTICS]
-           NAME                 NUMBER      COUNT         TOTAL ns          MAX ns
-           syscall_4294967274   4294967274  1             4,657             4,657
-           read                 0           1             14,114            14,114
-           TOTAL( - poll):                                       14,114
-
-           [SOFT IRQ STATISTICS]
-           NAME                 VECT_NR     COUNT         TOTAL ns          MAX ns
-           SCHED                7           1             7,089             7,089
-           TOTAL:                                                1                 7,089
+           NAME                 VECT_NR     COUNT         TOTAL ns          MAX ns       
+           RCU                  9           1             3,311             3,311        
+           TOTAL:                                                1                 3,311 
 ```
 
 Output Explanation:
