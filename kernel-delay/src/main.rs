@@ -94,7 +94,7 @@ fn print_thread_statistics(thread_events: &StdHashMap<u32, Vec<Event>>, target_p
                                     }
                                 })
                                 .or_insert(event.syscall_stat);
-                            total_excluding_poll = event.total_excluding_poll;
+                            total_excluding_poll += event.total_excluding_poll;
                         }
                         x if x == EventType::ThreadRunStats as u32 => {
                             thread_run_stats.push(event.thread_run_stat);
@@ -158,7 +158,8 @@ fn print_thread_statistics(thread_events: &StdHashMap<u32, Vec<Event>>, target_p
                     );
                     
                     // Aggregate thread run statistics
-                    if let Some(first_stat) = thread_run_stats.first() {
+                    if !thread_run_stats.is_empty() {
+                        let first_stat = &thread_run_stats[0];
                         let mut aggregated_stat = ThreadRunStat {
                             sched_cnt: 0,
                             total_ns: 0,
